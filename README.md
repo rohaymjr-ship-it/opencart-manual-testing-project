@@ -114,7 +114,7 @@ Role	Responsibility
 QA Tester	Execute test cases and report defects
 QA Tester	Prepare testing documentation
 QA Tester	Validate bug fixes
-11. Risk and Assumptions
+11. Risk and Assumptions    
 Risks
 Internet instability
 Demo website changes during testing
