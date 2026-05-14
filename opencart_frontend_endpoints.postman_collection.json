@@ -1,0 +1,3165 @@
+{
+  "info": {
+    "_postman_id": "ae62f6f7-d129-4de5-8b5f-f91fed2cf300",
+    "name": "OpenCart \u2013 Frontend / Browser Endpoints",
+    "description": "All HTTP routes the OpenCart storefront uses \u2014 page renders, AJAX cart updates, checkout steps, account management.\n\n**Base URL:** https://demo.opencart.com\n\n**Tip:** Run the Login request first and enable 'Automatically follow redirects' in Postman settings.\n\n**Environment variables:**\n- `baseUrl` = https://demo.opencart.com\n- `cart_key` = set manually after Add to Cart\n- `order_id`  = set after Confirm Order",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://demo.opencart.com",
+      "type": "string"
+    },
+    {
+      "key": "cart_key",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "order_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "wishlist_product_id",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "id": "6ebaf048-ac21-413a-bdad-d95258c16c98",
+      "name": "\ud83c\udfe0 Home & Common",
+      "description": "Page renders and header widget AJAX calls",
+      "item": [
+        {
+          "id": "9e8eaacb-0415-487e-8c0e-6eb4f21247e7",
+          "name": "Home page",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json, text/html"
+              },
+              {
+                "key": "X-Requested-With",
+                "value": "XMLHttpRequest"
+              }
+            ],
+            "url": {
+              "raw": "https://demo.opencart.com/index.php?route=common/home",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "route",
+                  "value": "common/home",
+                  "description": ""
+                }
+              ]
+            },
+            "description": "Renders the store front page."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Response is JSON\", () => pm.response.to.be.json);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "6ca36bd6-50ee-43da-9a49-5ef3634d8c20",
+          "name": "Get cart widget (AJAX)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json, text/html"
+              },
+              {
+                "key": "X-Requested-With",
+                "value": "XMLHttpRequest"
+              }
+            ],
+            "url": {
+              "raw": "https://demo.opencart.com/index.php?route=common/cart/info",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "route",
+                  "value": "common/cart/info",
+                  "description": ""
+                }
+              ]
+            },
+            "description": "AJAX call the header cart widget uses to refresh cart count & items."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Contains total\", () => pm.expect(pm.response.text()).to.include(\"total\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "545214d3-48cf-4150-b413-846ee3cf018e",
+          "name": "Get wishlist count",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json, text/html"
+              },
+              {
+                "key": "X-Requested-With",
+                "value": "XMLHttpRequest"
+              }
+            ],
+            "url": {
+              "raw": "https://demo.opencart.com/index.php?route=account/wishlist/info",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "route",
+                  "value": "account/wishlist/info",
+                  "description": ""
+                }
+              ]
+            },
+            "description": "AJAX endpoint for the header wish-list badge count."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Response is JSON\", () => pm.response.to.be.json);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "8c9d655c-e357-4362-b6b9-2cf772881987",
+          "name": "Currency switch (GET)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json, text/html"
+              },
+              {
+                "key": "X-Requested-With",
+                "value": "XMLHttpRequest"
+              }
+            ],
+            "url": {
+              "raw": "https://demo.opencart.com/index.php?route=common/currency&code=USD",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "route",
+                  "value": "common/currency",
+                  "description": ""
+                },
+                {
+                  "key": "code",
+                  "value": "USD",
+                  "description": ""
+                }
+              ]
+            },
+            "description": "Switches currency and redirects. Used by currency dropdown."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Response is JSON\", () => pm.response.to.be.json);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "7df83a43-f15a-46c2-a31a-0c76c0d94f2c",
+          "name": "Language switch",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json, text/html"
+              },
+              {
+                "key": "X-Requested-With",
+                "value": "XMLHttpRequest"
+              }
+            ],
+            "url": {
+              "raw": "https://demo.opencart.com/index.php?route=common/language&code=en-gb",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "route",
+                  "value": "common/language",
+                  "description": ""
+                },
+                {
+                  "key": "code",
+                  "value": "en-gb",
+                  "description": ""
+                }
+              ]
+            },
+            "description": "Switches storefront language."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Response is JSON\", () => pm.response.to.be.json);"
+                ]
+              }
+            }
+          ]
+        }
+      ],
+      "_postman_isSubFolder": true
+    },
+    {
+      "id": "106675e9-7aa8-4237-83b6-04a36b8515eb",
+      "name": "\ud83d\udd0d Search & Catalog",
+      "description": "Search, category, and product pages",
+      "item": [
+        {
+          "id": "7d275d97-6dc1-4daa-8024-e2e90b2de4b1",
+          "name": "Search \u2013 keyword",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json, text/html"
+              },
+              {
+                "key": "X-Requested-With",
+                "value": "XMLHttpRequest"
+              }
+            ],
+            "url": {
+              "raw": "https://demo.opencart.com/index.php?route=catalog/search&search=MacBook",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "route",
+                  "value": "catalog/search",
+                  "description": ""
+                },
+                {
+                  "key": "search",
+                  "value": "MacBook",
+                  "description": ""
+                }
+              ]
+            },
+            "description": "Full-text product search."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Response is JSON\", () => pm.response.to.be.json);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "f8b6a244-96da-47a4-9fbb-16912891436d",
+          "name": "Search \u2013 empty (negative)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json, text/html"
+              },
+              {
+                "key": "X-Requested-With",
+                "value": "XMLHttpRequest"
+              }
+            ],
+            "url": {
+              "raw": "https://demo.opencart.com/index.php?route=catalog/search&search=",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "route",
+                  "value": "catalog/search",
+                  "description": ""
+                },
+                {
+                  "key": "search",
+                  "value": "",
+                  "description": ""
+                }
+              ]
+            },
+            "description": "Empty search. Should show validation or no-results page."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Response is JSON\", () => pm.response.to.be.json);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "82eb3b32-1803-4207-a157-177f7fbaa670",
+          "name": "Category listing \u2013 Desktops",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json, text/html"
+              },
+              {
+                "key": "X-Requested-With",
+                "value": "XMLHttpRequest"
+              }
+            ],
+            "url": {
+              "raw": "https://demo.opencart.com/index.php?route=product/category&path=20",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "route",
+                  "value": "product/category",
+                  "description": ""
+                },
+                {
+                  "key": "path",
+                  "value": "20",
+                  "description": ""
+                }
+              ]
+            },
+            "description": "Category page for Desktops (category_id=20)."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Response is JSON\", () => pm.response.to.be.json);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "22da18d3-0c34-4495-96e3-c436569a07b2",
+          "name": "Category listing \u2013 Laptops",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json, text/html"
+              },
+              {
+                "key": "X-Requested-With",
+                "value": "XMLHttpRequest"
+              }
+            ],
+            "url": {
+              "raw": "https://demo.opencart.com/index.php?route=product/category&path=18",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "route",
+                  "value": "product/category",
+                  "description": ""
+                },
+                {
+                  "key": "path",
+                  "value": "18",
+                  "description": ""
+                }
+              ]
+            },
+            "description": "Category page for Laptops & Notebooks (id=18)."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Response is JSON\", () => pm.response.to.be.json);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "1328bf5e-1ae9-4f23-8d23-ca52db52df16",
+          "name": "Product detail \u2013 MacBook",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json, text/html"
+              },
+              {
+                "key": "X-Requested-With",
+                "value": "XMLHttpRequest"
+              }
+            ],
+            "url": {
+              "raw": "https://demo.opencart.com/index.php?route=product/product&product_id=43",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "route",
+                  "value": "product/product",
+                  "description": ""
+                },
+                {
+                  "key": "product_id",
+                  "value": "43",
+                  "description": ""
+                }
+              ]
+            },
+            "description": "Product detail page for MacBook (product_id=43)."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Response is JSON\", () => pm.response.to.be.json);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "8c59a088-8273-46bf-ac9c-f0a1f77efa8b",
+          "name": "Product detail \u2013 iPhone",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json, text/html"
+              },
+              {
+                "key": "X-Requested-With",
+                "value": "XMLHttpRequest"
+              }
+            ],
+            "url": {
+              "raw": "https://demo.opencart.com/index.php?route=product/product&product_id=40",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "route",
+                  "value": "product/product",
+                  "description": ""
+                },
+                {
+                  "key": "product_id",
+                  "value": "40",
+                  "description": ""
+                }
+              ]
+            },
+            "description": "Product detail page for iPhone."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Response is JSON\", () => pm.response.to.be.json);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "678f5100-0e48-44d5-b5d3-b5d6c9d25e87",
+          "name": "Product detail \u2013 invalid ID (negative)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json, text/html"
+              },
+              {
+                "key": "X-Requested-With",
+                "value": "XMLHttpRequest"
+              }
+            ],
+            "url": {
+              "raw": "https://demo.opencart.com/index.php?route=product/product&product_id=99999",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "route",
+                  "value": "product/product",
+                  "description": ""
+                },
+                {
+                  "key": "product_id",
+                  "value": "99999",
+                  "description": ""
+                }
+              ]
+            },
+            "description": "Should return 404 or redirect to error page."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"404 or redirect\", () => {",
+                  "    pm.expect([200,301,302,404]).to.include(pm.response.code);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "5d4f013d-a44d-461f-a0fe-8f7da972cc21",
+          "name": "Product compare \u2013 add",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json, text/html"
+              },
+              {
+                "key": "X-Requested-With",
+                "value": "XMLHttpRequest"
+              }
+            ],
+            "url": {
+              "raw": "https://demo.opencart.com/index.php?route=product/compare/add&product_id=43",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "route",
+                  "value": "product/compare/add",
+                  "description": ""
+                },
+                {
+                  "key": "product_id",
+                  "value": "43",
+                  "description": ""
+                }
+              ]
+            },
+            "description": "AJAX: add product to comparison list."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Response is JSON\", () => pm.response.to.be.json);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "1d10b6fa-87f6-4033-98e0-e80dac9544fd",
+          "name": "Product compare \u2013 view",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json, text/html"
+              },
+              {
+                "key": "X-Requested-With",
+                "value": "XMLHttpRequest"
+              }
+            ],
+            "url": {
+              "raw": "https://demo.opencart.com/index.php?route=product/compare",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "route",
+                  "value": "product/compare",
+                  "description": ""
+                }
+              ]
+            },
+            "description": "Comparison page."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Response is JSON\", () => pm.response.to.be.json);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "9e861acd-e92f-4682-82bb-41a3753702b6",
+          "name": "Product reviews \u2013 get",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json, text/html"
+              },
+              {
+                "key": "X-Requested-With",
+                "value": "XMLHttpRequest"
+              }
+            ],
+            "url": {
+              "raw": "https://demo.opencart.com/index.php?route=product/product/review&product_id=43",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "route",
+                  "value": "product/product/review",
+                  "description": ""
+                },
+                {
+                  "key": "product_id",
+                  "value": "43",
+                  "description": ""
+                }
+              ]
+            },
+            "description": "AJAX: get product reviews."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Response is JSON\", () => pm.response.to.be.json);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "7c581281-904e-49c2-a9fb-a926927e6f56",
+          "name": "Product reviews \u2013 post",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json, text/html"
+              },
+              {
+                "key": "X-Requested-With",
+                "value": "XMLHttpRequest"
+              }
+            ],
+            "url": {
+              "raw": "https://demo.opencart.com/index.php?route=product/product/write",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "route",
+                  "value": "product/product/write",
+                  "description": ""
+                }
+              ]
+            },
+            "description": "Submit a product review.",
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "product_id",
+                  "value": "43",
+                  "type": "text"
+                },
+                {
+                  "key": "name",
+                  "value": "Test User",
+                  "type": "text"
+                },
+                {
+                  "key": "review",
+                  "value": "Great product!",
+                  "type": "text"
+                },
+                {
+                  "key": "rating",
+                  "value": "5",
+                  "type": "text"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Response is JSON\", () => pm.response.to.be.json);"
+                ]
+              }
+            }
+          ]
+        }
+      ],
+      "_postman_isSubFolder": true
+    },
+    {
+      "id": "26db2c64-9ed3-4c58-92f6-62be29942270",
+      "name": "\ud83d\uded2 Cart (Frontend AJAX)",
+      "description": "Frontend cart AJAX endpoints",
+      "item": [
+        {
+          "id": "0adb106f-3253-4edb-abda-c9f3c660f76f",
+          "name": "Add to cart \u2013 valid",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json, text/html"
+              },
+              {
+                "key": "X-Requested-With",
+                "value": "XMLHttpRequest"
+              }
+            ],
+            "url": {
+              "raw": "https://demo.opencart.com/index.php?route=checkout/cart/add",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "route",
+                  "value": "checkout/cart/add",
+                  "description": ""
+                }
+              ]
+            },
+            "description": "AJAX Add to Cart from product/listing page.",
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "product_id",
+                  "value": "43",
+                  "type": "text"
+                },
+                {
+                  "key": "quantity",
+                  "value": "1",
+                  "type": "text"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Success message\", () => {",
+                  "    var j = pm.response.json();",
+                  "    pm.expect(j.success || j.error).to.exist;",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "c2a3480f-0c36-455a-854a-0ca097efc4e9",
+          "name": "Add to cart \u2013 no options (negative)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json, text/html"
+              },
+              {
+                "key": "X-Requested-With",
+                "value": "XMLHttpRequest"
+              }
+            ],
+            "url": {
+              "raw": "https://demo.opencart.com/index.php?route=checkout/cart/add",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "route",
+                  "value": "checkout/cart/add",
+                  "description": ""
+                }
+              ]
+            },
+            "description": "iPhone requires option selection. Should return error.",
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "product_id",
+                  "value": "40",
+                  "type": "text"
+                },
+                {
+                  "key": "quantity",
+                  "value": "1",
+                  "type": "text"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Returns error (option required)\", () => {",
+                  "    var j = pm.response.json();",
+                  "    pm.expect(j.error).to.exist;",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "1fe3ae49-7ff4-4e81-bff9-41c47baa6d04",
+          "name": "View cart page",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json, text/html"
+              },
+              {
+                "key": "X-Requested-With",
+                "value": "XMLHttpRequest"
+              }
+            ],
+            "url": {
+              "raw": "https://demo.opencart.com/index.php?route=checkout/cart",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "route",
+                  "value": "checkout/cart",
+                  "description": ""
+                }
+              ]
+            },
+            "description": "Full cart page render."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Response is JSON\", () => pm.response.to.be.json);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "77960ebb-1ce3-4818-a3a0-2a827be6784b",
+          "name": "Update cart quantity",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json, text/html"
+              },
+              {
+                "key": "X-Requested-With",
+                "value": "XMLHttpRequest"
+              }
+            ],
+            "url": {
+              "raw": "https://demo.opencart.com/index.php?route=checkout/cart/edit",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "route",
+                  "value": "checkout/cart/edit",
+                  "description": ""
+                }
+              ]
+            },
+            "description": "Update qty for a cart row.",
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "quantity[{{cart_key}}]",
+                  "value": "2",
+                  "type": "text"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Response is JSON\", () => pm.response.to.be.json);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "f605e867-5bda-4835-869d-c1fba282e1cb",
+          "name": "Remove from cart",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json, text/html"
+              },
+              {
+                "key": "X-Requested-With",
+                "value": "XMLHttpRequest"
+              }
+            ],
+            "url": {
+              "raw": "https://demo.opencart.com/index.php?route=checkout/cart/remove",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "route",
+                  "value": "checkout/cart/remove",
+                  "description": ""
+                }
+              ]
+            },
+            "description": "Remove item from cart.",
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "key",
+                  "value": "{{cart_key}}",
+                  "type": "text"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Response is JSON\", () => pm.response.to.be.json);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "62dbc9bb-d690-474b-9e2a-d4b264f33da7",
+          "name": "Apply coupon",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json, text/html"
+              },
+              {
+                "key": "X-Requested-With",
+                "value": "XMLHttpRequest"
+              }
+            ],
+            "url": {
+              "raw": "https://demo.opencart.com/index.php?route=checkout/cart/coupon",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "route",
+                  "value": "checkout/cart/coupon",
+                  "description": ""
+                }
+              ]
+            },
+            "description": "Apply coupon code to cart.",
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "coupon",
+                  "value": "TEST10",
+                  "type": "text"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Response is JSON\", () => pm.response.to.be.json);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "658c0016-6c53-48e8-b276-f349b130571b",
+          "name": "Get shipping estimate",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json, text/html"
+              },
+              {
+                "key": "X-Requested-With",
+                "value": "XMLHttpRequest"
+              }
+            ],
+            "url": {
+              "raw": "https://demo.opencart.com/index.php?route=checkout/cart/shipping",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "route",
+                  "value": "checkout/cart/shipping",
+                  "description": ""
+                }
+              ]
+            },
+            "description": "Get shipping quote from cart page.",
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "country_id",
+                  "value": "64",
+                  "type": "text"
+                },
+                {
+                  "key": "zone_id",
+                  "value": "0",
+                  "type": "text"
+                },
+                {
+                  "key": "postcode",
+                  "value": "11511",
+                  "type": "text"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Response is JSON\", () => pm.response.to.be.json);"
+                ]
+              }
+            }
+          ]
+        }
+      ],
+      "_postman_isSubFolder": true
+    },
+    {
+      "id": "63741a4c-bb91-4ad8-964e-9e2bd10bc8ec",
+      "name": "\u2705 Checkout",
+      "description": "Multi-step checkout flow",
+      "item": [
+        {
+          "id": "f0608720-cc4c-44b2-a2b4-2168cdf6d47c",
+          "name": "Checkout page",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json, text/html"
+              },
+              {
+                "key": "X-Requested-With",
+                "value": "XMLHttpRequest"
+              }
+            ],
+            "url": {
+              "raw": "https://demo.opencart.com/index.php?route=checkout/checkout",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "route",
+                  "value": "checkout/checkout",
+                  "description": ""
+                }
+              ]
+            },
+            "description": "Renders the checkout page. Requires items in cart."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Response is JSON\", () => pm.response.to.be.json);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "927662b6-059d-4da8-af6e-de5e7bdb228a",
+          "name": "Checkout \u2013 save billing (guest)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json, text/html"
+              },
+              {
+                "key": "X-Requested-With",
+                "value": "XMLHttpRequest"
+              }
+            ],
+            "url": {
+              "raw": "https://demo.opencart.com/index.php?route=checkout/register/save",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "route",
+                  "value": "checkout/register/save",
+                  "description": ""
+                }
+              ]
+            },
+            "description": "Save guest billing details at checkout step 1.",
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "account",
+                  "value": "guest",
+                  "type": "text"
+                },
+                {
+                  "key": "firstname",
+                  "value": "Test",
+                  "type": "text"
+                },
+                {
+                  "key": "lastname",
+                  "value": "User",
+                  "type": "text"
+                },
+                {
+                  "key": "email",
+                  "value": "testuser@example.com",
+                  "type": "text"
+                },
+                {
+                  "key": "telephone",
+                  "value": "01012345678",
+                  "type": "text"
+                },
+                {
+                  "key": "address_1",
+                  "value": "123 Tahrir St",
+                  "type": "text"
+                },
+                {
+                  "key": "city",
+                  "value": "Cairo",
+                  "type": "text"
+                },
+                {
+                  "key": "postcode",
+                  "value": "11511",
+                  "type": "text"
+                },
+                {
+                  "key": "country_id",
+                  "value": "64",
+                  "type": "text"
+                },
+                {
+                  "key": "zone_id",
+                  "value": "0",
+                  "type": "text"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Response is JSON\", () => pm.response.to.be.json);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "b32d7e62-9d99-4afb-888e-7899c23c4ac4",
+          "name": "Checkout \u2013 save billing (register)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json, text/html"
+              },
+              {
+                "key": "X-Requested-With",
+                "value": "XMLHttpRequest"
+              }
+            ],
+            "url": {
+              "raw": "https://demo.opencart.com/index.php?route=checkout/register/save",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "route",
+                  "value": "checkout/register/save",
+                  "description": ""
+                }
+              ]
+            },
+            "description": "Register new account during checkout.",
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "account",
+                  "value": "register",
+                  "type": "text"
+                },
+                {
+                  "key": "firstname",
+                  "value": "New",
+                  "type": "text"
+                },
+                {
+                  "key": "lastname",
+                  "value": "User",
+                  "type": "text"
+                },
+                {
+                  "key": "email",
+                  "value": "newuser@example.com",
+                  "type": "text"
+                },
+                {
+                  "key": "telephone",
+                  "value": "01099999999",
+                  "type": "text"
+                },
+                {
+                  "key": "address_1",
+                  "value": "456 Test Ave",
+                  "type": "text"
+                },
+                {
+                  "key": "city",
+                  "value": "Giza",
+                  "type": "text"
+                },
+                {
+                  "key": "postcode",
+                  "value": "12345",
+                  "type": "text"
+                },
+                {
+                  "key": "country_id",
+                  "value": "64",
+                  "type": "text"
+                },
+                {
+                  "key": "zone_id",
+                  "value": "0",
+                  "type": "text"
+                },
+                {
+                  "key": "password",
+                  "value": "Test@12345",
+                  "type": "text"
+                },
+                {
+                  "key": "confirm",
+                  "value": "Test@12345",
+                  "type": "text"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Response is JSON\", () => pm.response.to.be.json);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "236ca19a-798f-44d6-9e93-25c5a1c238bf",
+          "name": "Checkout \u2013 get shipping methods",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json, text/html"
+              },
+              {
+                "key": "X-Requested-With",
+                "value": "XMLHttpRequest"
+              }
+            ],
+            "url": {
+              "raw": "https://demo.opencart.com/index.php?route=checkout/shipping_method",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "route",
+                  "value": "checkout/shipping_method",
+                  "description": ""
+                }
+              ]
+            },
+            "description": "Returns available shipping methods for current address."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Response is JSON\", () => pm.response.to.be.json);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "3c6da95a-e2ee-4f62-86f9-d74e646523a4",
+          "name": "Checkout \u2013 save shipping method",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json, text/html"
+              },
+              {
+                "key": "X-Requested-With",
+                "value": "XMLHttpRequest"
+              }
+            ],
+            "url": {
+              "raw": "https://demo.opencart.com/index.php?route=checkout/shipping_method/save",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "route",
+                  "value": "checkout/shipping_method/save",
+                  "description": ""
+                }
+              ]
+            },
+            "description": "Select Free Shipping method.",
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "shipping_method",
+                  "value": "free.free",
+                  "type": "text"
+                },
+                {
+                  "key": "comment",
+                  "value": "",
+                  "type": "text"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Response is JSON\", () => pm.response.to.be.json);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "974aaf51-0f5e-4655-9091-38e0cae5a321",
+          "name": "Checkout \u2013 get payment methods",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json, text/html"
+              },
+              {
+                "key": "X-Requested-With",
+                "value": "XMLHttpRequest"
+              }
+            ],
+            "url": {
+              "raw": "https://demo.opencart.com/index.php?route=checkout/payment_method",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "route",
+                  "value": "checkout/payment_method",
+                  "description": ""
+                }
+              ]
+            },
+            "description": "Returns available payment methods."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Response is JSON\", () => pm.response.to.be.json);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "0685f294-76b9-4b58-8d18-f01fc78c29d6",
+          "name": "Checkout \u2013 save payment method (COD)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json, text/html"
+              },
+              {
+                "key": "X-Requested-With",
+                "value": "XMLHttpRequest"
+              }
+            ],
+            "url": {
+              "raw": "https://demo.opencart.com/index.php?route=checkout/payment_method/save",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "route",
+                  "value": "checkout/payment_method/save",
+                  "description": ""
+                }
+              ]
+            },
+            "description": "Select Cash on Delivery.",
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "payment_method",
+                  "value": "cod",
+                  "type": "text"
+                },
+                {
+                  "key": "comment",
+                  "value": "",
+                  "type": "text"
+                },
+                {
+                  "key": "agree",
+                  "value": "1",
+                  "type": "text"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Response is JSON\", () => pm.response.to.be.json);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "62760132-5831-454d-a500-550e316b63a4",
+          "name": "Checkout \u2013 confirm order",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json, text/html"
+              },
+              {
+                "key": "X-Requested-With",
+                "value": "XMLHttpRequest"
+              }
+            ],
+            "url": {
+              "raw": "https://demo.opencart.com/index.php?route=checkout/confirm",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "route",
+                  "value": "checkout/confirm",
+                  "description": ""
+                }
+              ]
+            },
+            "description": "Final confirmation step. Places the order."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Order ID or success\", () => {",
+                  "    var body = pm.response.text();",
+                  "    pm.expect(body).to.satisfy(b => b.includes('order_id') || b.includes('success'));",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "5140c641-8c84-465d-9d4c-62d25d3034c6",
+          "name": "Order success page",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json, text/html"
+              },
+              {
+                "key": "X-Requested-With",
+                "value": "XMLHttpRequest"
+              }
+            ],
+            "url": {
+              "raw": "https://demo.opencart.com/index.php?route=checkout/success",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "route",
+                  "value": "checkout/success",
+                  "description": ""
+                }
+              ]
+            },
+            "description": "Post-order confirmation page."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Response is JSON\", () => pm.response.to.be.json);"
+                ]
+              }
+            }
+          ]
+        }
+      ],
+      "_postman_isSubFolder": true
+    },
+    {
+      "id": "7f71cb09-214a-4d4d-a293-96ef8262d151",
+      "name": "\ud83d\udc64 Account \u2013 Auth",
+      "description": "Login, logout, register, forgotten password",
+      "item": [
+        {
+          "id": "ecc5a1b9-7ba6-429a-881d-660f05ccbde3",
+          "name": "Login page (GET)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json, text/html"
+              },
+              {
+                "key": "X-Requested-With",
+                "value": "XMLHttpRequest"
+              }
+            ],
+            "url": {
+              "raw": "https://demo.opencart.com/index.php?route=account/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "route",
+                  "value": "account/login",
+                  "description": ""
+                }
+              ]
+            },
+            "description": "Renders the login page."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Response is JSON\", () => pm.response.to.be.json);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "a2cf20ee-63fd-40c1-b95f-57dd5dc447ef",
+          "name": "Login \u2013 valid",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json, text/html"
+              },
+              {
+                "key": "X-Requested-With",
+                "value": "XMLHttpRequest"
+              }
+            ],
+            "url": {
+              "raw": "https://demo.opencart.com/index.php?route=account/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "route",
+                  "value": "account/login",
+                  "description": ""
+                }
+              ]
+            },
+            "description": "Submit login form with valid credentials.",
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "email",
+                  "value": "test@example.com",
+                  "type": "text"
+                },
+                {
+                  "key": "password",
+                  "value": "Test@12345",
+                  "type": "text"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200 or redirect\", () => {",
+                  "    pm.expect([200,301,302]).to.include(pm.response.code);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "71e43eae-3c66-4c0e-be9c-9fcd44b88e1d",
+          "name": "Login \u2013 wrong password (negative)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json, text/html"
+              },
+              {
+                "key": "X-Requested-With",
+                "value": "XMLHttpRequest"
+              }
+            ],
+            "url": {
+              "raw": "https://demo.opencart.com/index.php?route=account/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "route",
+                  "value": "account/login",
+                  "description": ""
+                }
+              ]
+            },
+            "description": "Should return login error.",
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "email",
+                  "value": "test@example.com",
+                  "type": "text"
+                },
+                {
+                  "key": "password",
+                  "value": "WrongPass!",
+                  "type": "text"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Response is JSON\", () => pm.response.to.be.json);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "1a1582fe-5b9a-4578-95f3-60ea352b74ce",
+          "name": "Logout",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json, text/html"
+              },
+              {
+                "key": "X-Requested-With",
+                "value": "XMLHttpRequest"
+              }
+            ],
+            "url": {
+              "raw": "https://demo.opencart.com/index.php?route=account/logout",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "route",
+                  "value": "account/logout",
+                  "description": ""
+                }
+              ]
+            },
+            "description": "Logs the current user out."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Response is JSON\", () => pm.response.to.be.json);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "48030ee5-4c82-4d3a-a8ac-fa9e5d2ef118",
+          "name": "Register page (GET)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json, text/html"
+              },
+              {
+                "key": "X-Requested-With",
+                "value": "XMLHttpRequest"
+              }
+            ],
+            "url": {
+              "raw": "https://demo.opencart.com/index.php?route=account/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "route",
+                  "value": "account/register",
+                  "description": ""
+                }
+              ]
+            },
+            "description": "Renders registration form."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Response is JSON\", () => pm.response.to.be.json);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "feca74fd-8a5d-4caf-bb30-6cc44bca609c",
+          "name": "Register \u2013 valid",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json, text/html"
+              },
+              {
+                "key": "X-Requested-With",
+                "value": "XMLHttpRequest"
+              }
+            ],
+            "url": {
+              "raw": "https://demo.opencart.com/index.php?route=account/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "route",
+                  "value": "account/register",
+                  "description": ""
+                }
+              ]
+            },
+            "description": "Submit registration form.",
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "firstname",
+                  "value": "New",
+                  "type": "text"
+                },
+                {
+                  "key": "lastname",
+                  "value": "User",
+                  "type": "text"
+                },
+                {
+                  "key": "email",
+                  "value": "brand_new@example.com",
+                  "type": "text"
+                },
+                {
+                  "key": "telephone",
+                  "value": "01099887766",
+                  "type": "text"
+                },
+                {
+                  "key": "password",
+                  "value": "Secure@123",
+                  "type": "text"
+                },
+                {
+                  "key": "confirm",
+                  "value": "Secure@123",
+                  "type": "text"
+                },
+                {
+                  "key": "agree",
+                  "value": "1",
+                  "type": "text"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Response is JSON\", () => pm.response.to.be.json);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "acc6f2ea-5745-4173-80a3-26ec54c68860",
+          "name": "Forgot password (POST)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json, text/html"
+              },
+              {
+                "key": "X-Requested-With",
+                "value": "XMLHttpRequest"
+              }
+            ],
+            "url": {
+              "raw": "https://demo.opencart.com/index.php?route=account/forgotten",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "route",
+                  "value": "account/forgotten",
+                  "description": ""
+                }
+              ]
+            },
+            "description": "Request password reset email.",
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "email",
+                  "value": "test@example.com",
+                  "type": "text"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Response is JSON\", () => pm.response.to.be.json);"
+                ]
+              }
+            }
+          ]
+        }
+      ],
+      "_postman_isSubFolder": true
+    },
+    {
+      "id": "54542627-a775-4f2e-b95e-c10cfa6ba57a",
+      "name": "\ud83d\udc64 Account \u2013 Management",
+      "description": "Account management endpoints",
+      "item": [
+        {
+          "id": "021903f5-11a8-4d29-8b70-b6b3b3a3adaa",
+          "name": "My Account dashboard",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json, text/html"
+              },
+              {
+                "key": "X-Requested-With",
+                "value": "XMLHttpRequest"
+              }
+            ],
+            "url": {
+              "raw": "https://demo.opencart.com/index.php?route=account/account",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "route",
+                  "value": "account/account",
+                  "description": ""
+                }
+              ]
+            },
+            "description": "Requires login. Shows account overview."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Response is JSON\", () => pm.response.to.be.json);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "d1370f0f-4037-492f-99ee-cd03d3126f7e",
+          "name": "Edit account info (GET)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json, text/html"
+              },
+              {
+                "key": "X-Requested-With",
+                "value": "XMLHttpRequest"
+              }
+            ],
+            "url": {
+              "raw": "https://demo.opencart.com/index.php?route=account/edit",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "route",
+                  "value": "account/edit",
+                  "description": ""
+                }
+              ]
+            },
+            "description": "Edit account form."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Response is JSON\", () => pm.response.to.be.json);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "a761c44c-7091-4e6a-aaf6-0b74d4b52ec2",
+          "name": "Edit account info (POST)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json, text/html"
+              },
+              {
+                "key": "X-Requested-With",
+                "value": "XMLHttpRequest"
+              }
+            ],
+            "url": {
+              "raw": "https://demo.opencart.com/index.php?route=account/edit",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "route",
+                  "value": "account/edit",
+                  "description": ""
+                }
+              ]
+            },
+            "description": "Save updated account details.",
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "firstname",
+                  "value": "Updated",
+                  "type": "text"
+                },
+                {
+                  "key": "lastname",
+                  "value": "Name",
+                  "type": "text"
+                },
+                {
+                  "key": "email",
+                  "value": "test@example.com",
+                  "type": "text"
+                },
+                {
+                  "key": "telephone",
+                  "value": "01000000000",
+                  "type": "text"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Response is JSON\", () => pm.response.to.be.json);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "e20e5276-426e-4fa9-940a-35a4ed1de50e",
+          "name": "Change password (POST)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json, text/html"
+              },
+              {
+                "key": "X-Requested-With",
+                "value": "XMLHttpRequest"
+              }
+            ],
+            "url": {
+              "raw": "https://demo.opencart.com/index.php?route=account/password",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "route",
+                  "value": "account/password",
+                  "description": ""
+                }
+              ]
+            },
+            "description": "Change account password.",
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "password",
+                  "value": "NewPass@123",
+                  "type": "text"
+                },
+                {
+                  "key": "confirm",
+                  "value": "NewPass@123",
+                  "type": "text"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Response is JSON\", () => pm.response.to.be.json);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "f42c4466-52f7-4542-931b-49d3505cb900",
+          "name": "Order history",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json, text/html"
+              },
+              {
+                "key": "X-Requested-With",
+                "value": "XMLHttpRequest"
+              }
+            ],
+            "url": {
+              "raw": "https://demo.opencart.com/index.php?route=account/order",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "route",
+                  "value": "account/order",
+                  "description": ""
+                }
+              ]
+            },
+            "description": "Lists past orders."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Response is JSON\", () => pm.response.to.be.json);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "1984f7ae-00fb-4d52-b9cb-16af31c60090",
+          "name": "Order detail",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json, text/html"
+              },
+              {
+                "key": "X-Requested-With",
+                "value": "XMLHttpRequest"
+              }
+            ],
+            "url": {
+              "raw": "https://demo.opencart.com/index.php?route=account/order/info&order_id={{order_id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "route",
+                  "value": "account/order/info",
+                  "description": ""
+                },
+                {
+                  "key": "order_id",
+                  "value": "{{order_id}}",
+                  "description": ""
+                }
+              ]
+            },
+            "description": "View single order details."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Response is JSON\", () => pm.response.to.be.json);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "e91abb4b-1eca-430b-8514-2b0ba0ae5583",
+          "name": "Address book",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json, text/html"
+              },
+              {
+                "key": "X-Requested-With",
+                "value": "XMLHttpRequest"
+              }
+            ],
+            "url": {
+              "raw": "https://demo.opencart.com/index.php?route=account/address",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "route",
+                  "value": "account/address",
+                  "description": ""
+                }
+              ]
+            },
+            "description": "List saved addresses."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Response is JSON\", () => pm.response.to.be.json);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "758b8621-e764-4da1-8065-1a8d118730cc",
+          "name": "Add address (POST)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json, text/html"
+              },
+              {
+                "key": "X-Requested-With",
+                "value": "XMLHttpRequest"
+              }
+            ],
+            "url": {
+              "raw": "https://demo.opencart.com/index.php?route=account/address/add",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "route",
+                  "value": "account/address/add",
+                  "description": ""
+                }
+              ]
+            },
+            "description": "Save a new address to address book.",
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "firstname",
+                  "value": "John",
+                  "type": "text"
+                },
+                {
+                  "key": "lastname",
+                  "value": "Doe",
+                  "type": "text"
+                },
+                {
+                  "key": "address_1",
+                  "value": "789 New St",
+                  "type": "text"
+                },
+                {
+                  "key": "city",
+                  "value": "Alexandria",
+                  "type": "text"
+                },
+                {
+                  "key": "postcode",
+                  "value": "21500",
+                  "type": "text"
+                },
+                {
+                  "key": "country_id",
+                  "value": "64",
+                  "type": "text"
+                },
+                {
+                  "key": "zone_id",
+                  "value": "0",
+                  "type": "text"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Response is JSON\", () => pm.response.to.be.json);"
+                ]
+              }
+            }
+          ]
+        }
+      ],
+      "_postman_isSubFolder": true
+    },
+    {
+      "id": "640feb76-f5a8-4be7-a569-6173e75c01ef",
+      "name": "\u2764\ufe0f Wish List",
+      "description": "Wish list AJAX and page routes",
+      "item": [
+        {
+          "id": "8371a733-08a1-4557-a42e-3559f72c2fa6",
+          "name": "Add to wish list",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json, text/html"
+              },
+              {
+                "key": "X-Requested-With",
+                "value": "XMLHttpRequest"
+              }
+            ],
+            "url": {
+              "raw": "https://demo.opencart.com/index.php?route=account/wishlist/add&product_id=43",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "route",
+                  "value": "account/wishlist/add",
+                  "description": ""
+                },
+                {
+                  "key": "product_id",
+                  "value": "43",
+                  "description": ""
+                }
+              ]
+            },
+            "description": "Add product to wish list. Redirects to login if not authenticated."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Response is JSON\", () => pm.response.to.be.json);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "f566b706-21da-428d-849c-c4629c7fe667",
+          "name": "View wish list",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json, text/html"
+              },
+              {
+                "key": "X-Requested-With",
+                "value": "XMLHttpRequest"
+              }
+            ],
+            "url": {
+              "raw": "https://demo.opencart.com/index.php?route=account/wishlist",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "route",
+                  "value": "account/wishlist",
+                  "description": ""
+                }
+              ]
+            },
+            "description": "Display wish list page."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Response is JSON\", () => pm.response.to.be.json);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "85936a32-a99a-465b-91db-074511315cd5",
+          "name": "Remove from wish list",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json, text/html"
+              },
+              {
+                "key": "X-Requested-With",
+                "value": "XMLHttpRequest"
+              }
+            ],
+            "url": {
+              "raw": "https://demo.opencart.com/index.php?route=account/wishlist/remove",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "route",
+                  "value": "account/wishlist/remove",
+                  "description": ""
+                }
+              ]
+            },
+            "description": "Remove item from wish list.",
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "wishlist_product_id",
+                  "value": "{{wishlist_product_id}}",
+                  "type": "text"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Response is JSON\", () => pm.response.to.be.json);"
+                ]
+              }
+            }
+          ]
+        }
+      ],
+      "_postman_isSubFolder": true
+    },
+    {
+      "id": "31bd8bed-bdc8-49b8-a95d-d3134947e166",
+      "name": "\u2139\ufe0f Information Pages",
+      "description": "Static and contact pages",
+      "item": [
+        {
+          "id": "cf906f47-60d0-416e-8aaf-09b292fd2635",
+          "name": "Contact Us (GET)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json, text/html"
+              },
+              {
+                "key": "X-Requested-With",
+                "value": "XMLHttpRequest"
+              }
+            ],
+            "url": {
+              "raw": "https://demo.opencart.com/index.php?route=information/contact",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "route",
+                  "value": "information/contact",
+                  "description": ""
+                }
+              ]
+            },
+            "description": "Renders the contact form."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Response is JSON\", () => pm.response.to.be.json);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "de9add4a-1ffd-49cf-b956-873ab148914d",
+          "name": "Contact Us (POST)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json, text/html"
+              },
+              {
+                "key": "X-Requested-With",
+                "value": "XMLHttpRequest"
+              }
+            ],
+            "url": {
+              "raw": "https://demo.opencart.com/index.php?route=information/contact",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "route",
+                  "value": "information/contact",
+                  "description": ""
+                }
+              ]
+            },
+            "description": "Submit contact form.",
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "name",
+                  "value": "Test User",
+                  "type": "text"
+                },
+                {
+                  "key": "email",
+                  "value": "test@example.com",
+                  "type": "text"
+                },
+                {
+                  "key": "enquiry",
+                  "value": "This is a test enquiry message.",
+                  "type": "text"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Response is JSON\", () => pm.response.to.be.json);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "6719a58f-053d-46eb-bc4d-fd0fc5b55aa1",
+          "name": "About Us",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json, text/html"
+              },
+              {
+                "key": "X-Requested-With",
+                "value": "XMLHttpRequest"
+              }
+            ],
+            "url": {
+              "raw": "https://demo.opencart.com/index.php?route=information/information&information_id=4",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "route",
+                  "value": "information/information",
+                  "description": ""
+                },
+                {
+                  "key": "information_id",
+                  "value": "4",
+                  "description": ""
+                }
+              ]
+            },
+            "description": "Static information page (About Us = id 4)."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Response is JSON\", () => pm.response.to.be.json);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "aebcc3f2-7ff1-4c9b-a4ba-592a03cb1624",
+          "name": "Sitemap",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json, text/html"
+              },
+              {
+                "key": "X-Requested-With",
+                "value": "XMLHttpRequest"
+              }
+            ],
+            "url": {
+              "raw": "https://demo.opencart.com/index.php?route=information/sitemap",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "route",
+                  "value": "information/sitemap",
+                  "description": ""
+                }
+              ]
+            },
+            "description": "Sitemap page."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Response is JSON\", () => pm.response.to.be.json);"
+                ]
+              }
+            }
+          ]
+        }
+      ],
+      "_postman_isSubFolder": true
+    }
+  ]
+}

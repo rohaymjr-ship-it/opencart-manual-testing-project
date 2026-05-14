@@ -1,0 +1,1812 @@
+{
+  "info": {
+    "_postman_id": "1f109c96-6d5b-4e8a-9d67-741fc1efeea5",
+    "name": "OpenCart \u2013 Built-in REST API",
+    "description": "Official built-in OpenCart catalog API (catalog/controller/api/*).\n\n**Auth flow:**\n1. Run 'Login \u2013 valid key' first \u2192 api_token saved to env\n2. All subsequent requests use the session cookie (OCSESSID)\n\n**Environment variables needed:**\n- `baseUrl` = https://demo.opencart.com\n- `api_key` = your API key from Admin > System > Users > API\n- `api_token` = auto-set by Login request\n- `cart_key`, `order_id` = auto-set by cart/order requests",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://demo.opencart.com",
+      "type": "string"
+    },
+    {
+      "key": "api_key",
+      "value": "PASTE_YOUR_API_KEY_HERE",
+      "type": "string"
+    },
+    {
+      "key": "api_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "cart_key",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "order_id",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "id": "24f58dda-a2a1-42ea-bc4e-f50904abacdd",
+      "name": "\ud83d\udd10 Authentication",
+      "description": "POST /index.php?route=api/login",
+      "item": [
+        {
+          "id": "ba744a39-e446-4702-9fea-e9b0e5bb214c",
+          "name": "Login \u2013 valid key",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Oc-Store-Id",
+                "value": "0"
+              }
+            ],
+            "url": {
+              "raw": "https://demo.opencart.com/index.php?route=api/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "route",
+                  "value": "api/login",
+                  "description": ""
+                }
+              ]
+            },
+            "description": "Authenticates with the API key and returns api_token. Run this first.",
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "key",
+                  "value": "{{api_key}}",
+                  "type": "text"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Save api_token to env after login",
+                  "var resp = pm.response.json();",
+                  "if(resp.api_token){",
+                  "    pm.environment.set(\"api_token\", resp.api_token);",
+                  "    console.log(\"api_token saved:\", resp.api_token);",
+                  "}",
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Response is JSON\", () => pm.response.to.be.json);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "0aa183cf-d5dc-47b7-ab31-dff0b4bbdeb7",
+          "name": "Login \u2013 invalid key (negative)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Oc-Store-Id",
+                "value": "0"
+              }
+            ],
+            "url": {
+              "raw": "https://demo.opencart.com/index.php?route=api/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "route",
+                  "value": "api/login",
+                  "description": ""
+                }
+              ]
+            },
+            "description": "Should return error.key warning.",
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "key",
+                  "value": "INVALID_KEY_12345",
+                  "type": "text"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Returns error\", () => {",
+                  "    var j = pm.response.json();",
+                  "    pm.expect(j.error).to.exist;",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "6ee5a690-7bf7-4c6a-b135-187baf6ec879",
+          "name": "Login \u2013 missing key (negative)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Oc-Store-Id",
+                "value": "0"
+              }
+            ],
+            "url": {
+              "raw": "https://demo.opencart.com/index.php?route=api/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "route",
+                  "value": "api/login",
+                  "description": ""
+                }
+              ]
+            },
+            "description": "No key sent. Should return error."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Response is JSON\", () => pm.response.to.be.json);"
+                ]
+              }
+            }
+          ]
+        }
+      ],
+      "_postman_isSubFolder": true
+    },
+    {
+      "id": "69b090db-906d-477e-9386-362b64711c65",
+      "name": "\ud83d\uded2 Cart",
+      "description": "Manage the session shopping cart",
+      "item": [
+        {
+          "id": "37ac7e51-6c99-4191-bac0-a0eee89d7a4b",
+          "name": "Add product to cart",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Oc-Store-Id",
+                "value": "0"
+              }
+            ],
+            "url": {
+              "raw": "https://demo.opencart.com/index.php?route=api/cart/add",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "route",
+                  "value": "api/cart/add",
+                  "description": ""
+                }
+              ]
+            },
+            "description": "Adds a product to the session cart. Requires valid api_token cookie.",
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "product_id",
+                  "value": "43",
+                  "type": "text"
+                },
+                {
+                  "key": "quantity",
+                  "value": "1",
+                  "type": "text"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Response is JSON\", () => pm.response.to.be.json);",
+                  "pm.test(\"No error key\", () => {",
+                  "    var j = pm.response.json();",
+                  "    pm.expect(j).to.not.have.property(\"error\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "a7e7f859-2df4-44de-9770-a4bd44a215c9",
+          "name": "Add product with options",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Oc-Store-Id",
+                "value": "0"
+              }
+            ],
+            "url": {
+              "raw": "https://demo.opencart.com/index.php?route=api/cart/add",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "route",
+                  "value": "api/cart/add",
+                  "description": ""
+                }
+              ]
+            },
+            "description": "Product 40 (iPhone) with option. option[option_id]=option_value_id",
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "product_id",
+                  "value": "40",
+                  "type": "text"
+                },
+                {
+                  "key": "quantity",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "option[226]",
+                  "value": "30",
+                  "type": "text"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Response is JSON\", () => pm.response.to.be.json);",
+                  "pm.test(\"No error key\", () => {",
+                  "    var j = pm.response.json();",
+                  "    pm.expect(j).to.not.have.property(\"error\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "3b91d9a2-1057-4762-92cc-10f2303e49f8",
+          "name": "Get cart contents",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Oc-Store-Id",
+                "value": "0"
+              }
+            ],
+            "url": {
+              "raw": "https://demo.opencart.com/index.php?route=api/cart/products",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "route",
+                  "value": "api/cart/products",
+                  "description": ""
+                }
+              ]
+            },
+            "description": "Returns all products currently in the cart."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Response is JSON\", () => pm.response.to.be.json);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "81f5c404-6540-4f55-b63e-f38a725283d5",
+          "name": "Update cart quantity",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Oc-Store-Id",
+                "value": "0"
+              }
+            ],
+            "url": {
+              "raw": "https://demo.opencart.com/index.php?route=api/cart/edit",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "route",
+                  "value": "api/cart/edit",
+                  "description": ""
+                }
+              ]
+            },
+            "description": "Edit quantity of a cart row. cart key returned from Get cart.",
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "key",
+                  "value": "{{cart_key}}",
+                  "type": "text"
+                },
+                {
+                  "key": "quantity",
+                  "value": "3",
+                  "type": "text"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Response is JSON\", () => pm.response.to.be.json);",
+                  "pm.test(\"No error key\", () => {",
+                  "    var j = pm.response.json();",
+                  "    pm.expect(j).to.not.have.property(\"error\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "7601f95c-c2b3-4c6c-be2a-325c3e621046",
+          "name": "Remove item from cart",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Oc-Store-Id",
+                "value": "0"
+              }
+            ],
+            "url": {
+              "raw": "https://demo.opencart.com/index.php?route=api/cart/remove",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "route",
+                  "value": "api/cart/remove",
+                  "description": ""
+                }
+              ]
+            },
+            "description": "Remove a product row from cart.",
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "key",
+                  "value": "{{cart_key}}",
+                  "type": "text"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Response is JSON\", () => pm.response.to.be.json);",
+                  "pm.test(\"No error key\", () => {",
+                  "    var j = pm.response.json();",
+                  "    pm.expect(j).to.not.have.property(\"error\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ],
+      "_postman_isSubFolder": true
+    },
+    {
+      "id": "f558c22a-b746-4839-b0eb-cae1bbe22272",
+      "name": "\ud83c\udfe0 Shipping Address",
+      "description": "Shipping address & method selection",
+      "item": [
+        {
+          "id": "054d730a-20e9-4b19-baea-cfa318500796",
+          "name": "Set shipping address",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Oc-Store-Id",
+                "value": "0"
+              }
+            ],
+            "url": {
+              "raw": "https://demo.opencart.com/index.php?route=api/shipping/address",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "route",
+                  "value": "api/shipping/address",
+                  "description": ""
+                }
+              ]
+            },
+            "description": "Set the shipping address for checkout.",
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "firstname",
+                  "value": "John",
+                  "type": "text"
+                },
+                {
+                  "key": "lastname",
+                  "value": "Doe",
+                  "type": "text"
+                },
+                {
+                  "key": "address_1",
+                  "value": "123 Test St",
+                  "type": "text"
+                },
+                {
+                  "key": "city",
+                  "value": "Cairo",
+                  "type": "text"
+                },
+                {
+                  "key": "postcode",
+                  "value": "11511",
+                  "type": "text"
+                },
+                {
+                  "key": "country_id",
+                  "value": "64",
+                  "type": "text"
+                },
+                {
+                  "key": "zone_id",
+                  "value": "0",
+                  "type": "text"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Response is JSON\", () => pm.response.to.be.json);",
+                  "pm.test(\"No error key\", () => {",
+                  "    var j = pm.response.json();",
+                  "    pm.expect(j).to.not.have.property(\"error\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "e98bc51c-3138-4afd-9e09-3206396e53ec",
+          "name": "Get shipping methods",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Oc-Store-Id",
+                "value": "0"
+              }
+            ],
+            "url": {
+              "raw": "https://demo.opencart.com/index.php?route=api/shipping/methods",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "route",
+                  "value": "api/shipping/methods",
+                  "description": ""
+                }
+              ]
+            },
+            "description": "Returns available shipping methods after address is set."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Response is JSON\", () => pm.response.to.be.json);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "63cfdad0-3470-48f1-95a2-5e081148e330",
+          "name": "Set shipping method",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Oc-Store-Id",
+                "value": "0"
+              }
+            ],
+            "url": {
+              "raw": "https://demo.opencart.com/index.php?route=api/shipping/method",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "route",
+                  "value": "api/shipping/method",
+                  "description": ""
+                }
+              ]
+            },
+            "description": "Select a shipping method. Value from Get shipping methods.",
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "shipping_method",
+                  "value": "free.free",
+                  "type": "text"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Response is JSON\", () => pm.response.to.be.json);",
+                  "pm.test(\"No error key\", () => {",
+                  "    var j = pm.response.json();",
+                  "    pm.expect(j).to.not.have.property(\"error\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ],
+      "_postman_isSubFolder": true
+    },
+    {
+      "id": "c8cb943a-b87b-4901-a363-653b7badec1e",
+      "name": "\ud83d\udcb3 Payment",
+      "description": "Payment address & method",
+      "item": [
+        {
+          "id": "3bb1c7a0-2bc7-471f-8e4d-1551ea746c5a",
+          "name": "Set payment address (same as shipping)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Oc-Store-Id",
+                "value": "0"
+              }
+            ],
+            "url": {
+              "raw": "https://demo.opencart.com/index.php?route=api/payment/address",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "route",
+                  "value": "api/payment/address",
+                  "description": ""
+                }
+              ]
+            },
+            "description": "Set billing / payment address.",
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "firstname",
+                  "value": "John",
+                  "type": "text"
+                },
+                {
+                  "key": "lastname",
+                  "value": "Doe",
+                  "type": "text"
+                },
+                {
+                  "key": "address_1",
+                  "value": "123 Test St",
+                  "type": "text"
+                },
+                {
+                  "key": "city",
+                  "value": "Cairo",
+                  "type": "text"
+                },
+                {
+                  "key": "postcode",
+                  "value": "11511",
+                  "type": "text"
+                },
+                {
+                  "key": "country_id",
+                  "value": "64",
+                  "type": "text"
+                },
+                {
+                  "key": "zone_id",
+                  "value": "0",
+                  "type": "text"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Response is JSON\", () => pm.response.to.be.json);",
+                  "pm.test(\"No error key\", () => {",
+                  "    var j = pm.response.json();",
+                  "    pm.expect(j).to.not.have.property(\"error\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "bd15f6db-ecd2-4121-acdc-5665a58e86f3",
+          "name": "Get payment methods",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Oc-Store-Id",
+                "value": "0"
+              }
+            ],
+            "url": {
+              "raw": "https://demo.opencart.com/index.php?route=api/payment/methods",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "route",
+                  "value": "api/payment/methods",
+                  "description": ""
+                }
+              ]
+            },
+            "description": "Returns available payment methods."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Response is JSON\", () => pm.response.to.be.json);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "b38806ff-18e3-49cb-a4a6-7b9530ef53e3",
+          "name": "Set payment method \u2013 COD",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Oc-Store-Id",
+                "value": "0"
+              }
+            ],
+            "url": {
+              "raw": "https://demo.opencart.com/index.php?route=api/payment/method",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "route",
+                  "value": "api/payment/method",
+                  "description": ""
+                }
+              ]
+            },
+            "description": "Select Cash on Delivery.",
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "payment_method",
+                  "value": "cod",
+                  "type": "text"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Response is JSON\", () => pm.response.to.be.json);",
+                  "pm.test(\"No error key\", () => {",
+                  "    var j = pm.response.json();",
+                  "    pm.expect(j).to.not.have.property(\"error\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "e7a87dbd-8a10-4c5a-8061-1f6d0be4ec8d",
+          "name": "Set payment method \u2013 Bank Transfer",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Oc-Store-Id",
+                "value": "0"
+              }
+            ],
+            "url": {
+              "raw": "https://demo.opencart.com/index.php?route=api/payment/method",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "route",
+                  "value": "api/payment/method",
+                  "description": ""
+                }
+              ]
+            },
+            "description": "Select Bank Transfer.",
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "payment_method",
+                  "value": "bank_transfer",
+                  "type": "text"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Response is JSON\", () => pm.response.to.be.json);",
+                  "pm.test(\"No error key\", () => {",
+                  "    var j = pm.response.json();",
+                  "    pm.expect(j).to.not.have.property(\"error\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ],
+      "_postman_isSubFolder": true
+    },
+    {
+      "id": "c0ad1f89-f20f-400a-8060-6547ca5bf49f",
+      "name": "\ud83d\udce6 Order",
+      "description": "Place and manage orders via API",
+      "item": [
+        {
+          "id": "0b7e8909-0b67-4fb9-8e46-e8fca381f8e7",
+          "name": "Confirm order (place order)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Oc-Store-Id",
+                "value": "0"
+              }
+            ],
+            "url": {
+              "raw": "https://demo.opencart.com/index.php?route=api/order/add",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "route",
+                  "value": "api/order/add",
+                  "description": ""
+                }
+              ]
+            },
+            "description": "Confirms and places the order. Cart must have items and addresses set."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"order_id returned\", () => {",
+                  "    var j = pm.response.json();",
+                  "    pm.expect(j.order_id).to.exist;",
+                  "    pm.environment.set(\"order_id\", j.order_id);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "5d81300a-0c78-4190-bd84-a8a9a2ef63f9",
+          "name": "Get order info",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Oc-Store-Id",
+                "value": "0"
+              }
+            ],
+            "url": {
+              "raw": "https://demo.opencart.com/index.php?route=api/order/info&order_id={{order_id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "route",
+                  "value": "api/order/info",
+                  "description": ""
+                },
+                {
+                  "key": "order_id",
+                  "value": "{{order_id}}",
+                  "description": ""
+                }
+              ]
+            },
+            "description": "Retrieve placed order details."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Response is JSON\", () => pm.response.to.be.json);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "9d5ea323-37ee-4627-a2de-ce784516bff5",
+          "name": "Edit order",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Oc-Store-Id",
+                "value": "0"
+              }
+            ],
+            "url": {
+              "raw": "https://demo.opencart.com/index.php?route=api/order/edit&order_id={{order_id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "route",
+                  "value": "api/order/edit",
+                  "description": ""
+                },
+                {
+                  "key": "order_id",
+                  "value": "{{order_id}}",
+                  "description": ""
+                }
+              ]
+            },
+            "description": "Update order status (e.g. 5=Complete).",
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "order_status_id",
+                  "value": "5",
+                  "type": "text"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Response is JSON\", () => pm.response.to.be.json);",
+                  "pm.test(\"No error key\", () => {",
+                  "    var j = pm.response.json();",
+                  "    pm.expect(j).to.not.have.property(\"error\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "a81be22e-c6ec-4da4-abe6-fdcb8d80cded",
+          "name": "Delete order",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Oc-Store-Id",
+                "value": "0"
+              }
+            ],
+            "url": {
+              "raw": "https://demo.opencart.com/index.php?route=api/order/delete&order_id={{order_id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "route",
+                  "value": "api/order/delete",
+                  "description": ""
+                },
+                {
+                  "key": "order_id",
+                  "value": "{{order_id}}",
+                  "description": ""
+                }
+              ]
+            },
+            "description": "Delete an order by ID."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Response is JSON\", () => pm.response.to.be.json);",
+                  "pm.test(\"No error key\", () => {",
+                  "    var j = pm.response.json();",
+                  "    pm.expect(j).to.not.have.property(\"error\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ],
+      "_postman_isSubFolder": true
+    },
+    {
+      "id": "62efafc5-b017-4cea-bf20-b7f981243af0",
+      "name": "\ud83c\udf9f\ufe0f Voucher & Coupon",
+      "description": "Discounts and vouchers",
+      "item": [
+        {
+          "id": "281d2eb3-130a-44e7-8d5e-c34d31132623",
+          "name": "Apply coupon",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Oc-Store-Id",
+                "value": "0"
+              }
+            ],
+            "url": {
+              "raw": "https://demo.opencart.com/index.php?route=api/coupon",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "route",
+                  "value": "api/coupon",
+                  "description": ""
+                }
+              ]
+            },
+            "description": "Apply a coupon code to the current cart.",
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "coupon",
+                  "value": "TEST10",
+                  "type": "text"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Response is JSON\", () => pm.response.to.be.json);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "b88855a2-fd0b-4b83-834f-24f304330247",
+          "name": "Apply invalid coupon (negative)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Oc-Store-Id",
+                "value": "0"
+              }
+            ],
+            "url": {
+              "raw": "https://demo.opencart.com/index.php?route=api/coupon",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "route",
+                  "value": "api/coupon",
+                  "description": ""
+                }
+              ]
+            },
+            "description": "Should return an error for invalid coupon.",
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "coupon",
+                  "value": "INVALID999",
+                  "type": "text"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Returns warning/error\", () => {",
+                  "    var j = pm.response.json();",
+                  "    pm.expect(j.error || j.warning).to.exist;",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "b534ac41-b833-4adb-9d68-f454d32ff0e7",
+          "name": "Apply voucher",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Oc-Store-Id",
+                "value": "0"
+              }
+            ],
+            "url": {
+              "raw": "https://demo.opencart.com/index.php?route=api/voucher",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "route",
+                  "value": "api/voucher",
+                  "description": ""
+                }
+              ]
+            },
+            "description": "Apply a gift voucher code.",
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "voucher",
+                  "value": "VOU-TEST",
+                  "type": "text"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Response is JSON\", () => pm.response.to.be.json);"
+                ]
+              }
+            }
+          ]
+        }
+      ],
+      "_postman_isSubFolder": true
+    },
+    {
+      "id": "05400272-d189-4437-bd7d-1a4969c71056",
+      "name": "\ud83d\udc64 Customer",
+      "description": "Attach customer to session",
+      "item": [
+        {
+          "id": "cf0029c3-47e9-4d23-bc8b-22d146e6d016",
+          "name": "Set customer (guest checkout)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Oc-Store-Id",
+                "value": "0"
+              }
+            ],
+            "url": {
+              "raw": "https://demo.opencart.com/index.php?route=api/customer",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "route",
+                  "value": "api/customer",
+                  "description": ""
+                }
+              ]
+            },
+            "description": "Attach customer info to the session for guest checkout.",
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "firstname",
+                  "value": "Test",
+                  "type": "text"
+                },
+                {
+                  "key": "lastname",
+                  "value": "User",
+                  "type": "text"
+                },
+                {
+                  "key": "email",
+                  "value": "test@example.com",
+                  "type": "text"
+                },
+                {
+                  "key": "telephone",
+                  "value": "01012345678",
+                  "type": "text"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Response is JSON\", () => pm.response.to.be.json);",
+                  "pm.test(\"No error key\", () => {",
+                  "    var j = pm.response.json();",
+                  "    pm.expect(j).to.not.have.property(\"error\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ],
+      "_postman_isSubFolder": true
+    },
+    {
+      "id": "9f9ff1a2-b627-4d40-9cb5-9d2b135d07a4",
+      "name": "\ud83c\udf0d Locale & Currency",
+      "description": "Currency switching",
+      "item": [
+        {
+          "id": "6d1834f2-654a-440a-b8f3-9640825558ad",
+          "name": "Set currency",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Oc-Store-Id",
+                "value": "0"
+              }
+            ],
+            "url": {
+              "raw": "https://demo.opencart.com/index.php?route=api/currency",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "route",
+                  "value": "api/currency",
+                  "description": ""
+                }
+              ]
+            },
+            "description": "Switch active currency to USD.",
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "currency",
+                  "value": "USD",
+                  "type": "text"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Response is JSON\", () => pm.response.to.be.json);",
+                  "pm.test(\"No error key\", () => {",
+                  "    var j = pm.response.json();",
+                  "    pm.expect(j).to.not.have.property(\"error\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "fe3ef7e3-93f5-449b-9268-7b9c0cc145eb",
+          "name": "Set currency \u2013 EGP",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Oc-Store-Id",
+                "value": "0"
+              }
+            ],
+            "url": {
+              "raw": "https://demo.opencart.com/index.php?route=api/currency",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "route",
+                  "value": "api/currency",
+                  "description": ""
+                }
+              ]
+            },
+            "description": "Switch to Egyptian Pound.",
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "currency",
+                  "value": "EGP",
+                  "type": "text"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Response is JSON\", () => pm.response.to.be.json);",
+                  "pm.test(\"No error key\", () => {",
+                  "    var j = pm.response.json();",
+                  "    pm.expect(j).to.not.have.property(\"error\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "f6520fdb-788d-4676-b9e1-fd2042fe15c2",
+          "name": "Set invalid currency (negative)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Oc-Store-Id",
+                "value": "0"
+              }
+            ],
+            "url": {
+              "raw": "https://demo.opencart.com/index.php?route=api/currency",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "route",
+                  "value": "api/currency",
+                  "description": ""
+                }
+              ]
+            },
+            "description": "Should fail or silently reject unknown currency.",
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "currency",
+                  "value": "XYZ",
+                  "type": "text"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Response is JSON\", () => pm.response.to.be.json);"
+                ]
+              }
+            }
+          ]
+        }
+      ],
+      "_postman_isSubFolder": true
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Global pre-request: attach api_token as query param if set",
+          "var token = pm.environment.get('api_token') || pm.collectionVariables.get('api_token');",
+          "if(token){ pm.request.addQueryParams('api_token='+token); }"
+        ]
+      }
+    }
+  ]
+}
